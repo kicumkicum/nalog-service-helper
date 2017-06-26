@@ -1,49 +1,46 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <base target="_top">
-    <script>
-    window.onload = function() {
-   
-      document.getElementById('button').addEventListener('click', function() {
-      alert('click');
-        const input = document.getElementById('input');
-      
-        const inputValue = input.value;
-        alert(inputValue);
-        
-        if (input) {
-          var image = document.getElementById('image');
-          
-          var imageSrc = image.src;
-          const mask = '&a=';
-          const index = imageSrc.indexOf(mask);
-          alert(index);
-          alert(index + mask.length);
-          try {
-            var captchaToken = imageSrc.substring(index + mask.length);
-          } catch (e) {alert(e)}
-          alert(imageSrc);
-          alert(captchaToken);
-          var captcha = {
-            token: captchaToken,
-            value: inputValue
-          };
-          try {
-          google.script.run.testRequest(captcha);
-          } catch (e) {alert(e)}
-          alert('!!!')
-        }
-      });
-       alert(234);
-    }
-    </script>
-  </head>
-  <body>
-    <img id=image>
-    <input id="input">
-    <button id="button"></button>
-  </body>
+	<head>
+		<base target="_top">
+		<script>
+			(function(window) {
+				window.onload = function() {
+					const button = document.getElementById('button');
+					button.addEventListener('click', function() {
+						const input = document.getElementById('input');
+						const inputValue = input.value;
+
+						if (input) {
+							const image = document.getElementById('image');
+							const imageSrc = image.src;
+							const mask = '&a=';
+							const index = imageSrc.indexOf(mask);
+
+							try {
+								var captchaToken = imageSrc.substring(index + mask.length);
+							} catch (e) {
+								alert(e)
+							}
+							const captcha = {
+								token: captchaToken,
+								value: inputValue
+							};
+							try {
+								google.script.run.testRequest(captcha);
+							} catch (e) {
+								alert('ERROR: ' + e)
+							}
+						}
+					});
+				}
+			})(window)
+		</script>
+	</head>
+	<body>
+		<img id=image>
+		<input id="input">
+		<button id="button"></button>
+	</body>
 </html>
 
 

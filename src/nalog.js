@@ -1,11 +1,39 @@
-function loadPage() {
-	const page = UrlFetchApp.fetch(SERVICE_BASE_URL);
-	const regexp = new RegExp('name="captchaToken".*\>', 'i');
-	const match = regexp.exec(page.getContentText())[0];
-	const captchaToken = match.substring('name="captchaToken" value="'.length).replace('"/>', '');
-
-	return showCaptcha(getCaptchaImgSrc(captchaToken));
+/**
+ * @param {Nalog.Deps} deps
+ * @return {Nalog}
+ * @global
+ */
+function createNalog(deps) {
+	return new Nalog(deps);
 }
+
+
+/**
+ * @global
+ */
+function testNalog() {
+	var showCaptcha = function(src) {
+		const ss = SpreadsheetApp.getActiveSpreadsheet();
+		const html = HtmlService.createHtmlOutputFromFile('captcha.html');
+		html.setWidth(300);
+		html.setHeight(200);
+
+//	html.append('<img src="' + src + '">');
+//	html.append('<!DOCTYPE html><html><head><base target="_top"></head><body><img src="' + src + '"></body></html>');
+		//html.append('<img src=' + src + '>');
+
+		ss.show(html);
+	};
+
+	var n = createNalog();
+
+	var a = n._loadCaptchaToken();
+	var src = n._loadCaptchaImageSrc(a.loadTime, a.token);
+	Logger.log(src);
+
+	showCaptcha(src);
+}
+
 
 const CAPTCHA_BASE_URL = 'https://service.nalog.ru/static/captcha.html';
 const SERVICE_BASE_URL = 'https://service.nalog.ru/inn.do';
@@ -29,20 +57,7 @@ var Nalog = function(deps) {
    */
   this.getINN = function(data, captcha) {
 	const url = 'https://service.nalog.ru/inn-proc.do';
-	const newData = {
-	  'fam': data.fam,
-	  'nam': data.nam,
-	  'otch': data.otch,
-	  'bdate': data.bdate,
-	  'docno': data.docno,
-	  'docdt': data.docdt,
-	  'captcha': captcha.value,
-	  'captchaToken': captcha.token,
-	  'c': 'innMy',
-	  'bplace': '',
-	  'doctype': '21'
-	};
-
+	const newData = this._createOutData(data, captcha);
 	const responce = this._request.fetch('post', url, newData);
   };
 
@@ -51,10 +66,37 @@ var Nalog = function(deps) {
 	return this._loadCaptchaImageSrc(captchaToken.loadTime, captchaToken.token);
   };
 
+	/**
+	 *  @param {Nalog.InputData} data
+	 * @param {{
+   *   token: string,
+   *   value: string
+   * }} captcha
+	 * @return {Nalog.OutputtData}
+	 * @private
+	 */
+  this._createOutData = function(data, captcha) {
+	  return {
+		  'fam': data.fam,
+		  'nam': data.nam,
+		  'otch': data.otch,
+		  'bdate': data.bdate,
+		  'docno': data.docno,
+		  'docdt': data.docdt,
+		  'captcha': captcha.value,
+		  'captchaToken': captcha.token,
+		  'c': 'innMy',
+		  'bplace': '',
+		  'doctype': '21'
+	  };
+  };
+
+
   /**
    * @param {number} loadTime
    * @param {string} token
    * @return {string}
+   * @private
    * @this {Nalog}
    */
   this._loadCaptchaImageSrc = function(loadTime, token) {
@@ -62,8 +104,9 @@ var Nalog = function(deps) {
   };
 
   /**
-  * @return {{loadTime: number, token: string}}
-  */
+   * @return {{loadTime: number, token: string}}
+   * @private
+   */
   this._loadCaptchaToken = function() {
 	const now = Math.floor(Date.now() / 1000);
 	const response = UrlFetchApp.fetch(CAPTCHA_BASE_URL + '?' + now).getContentText();
@@ -109,41 +152,3 @@ Nalog.InputData;
  * }}
 */
 Nalog.OutputtData;
-
-
-/**
- * @param {Nalog.Deps} deps
- * @return {Nalog}
- * @global
- */
-function createNalog(deps) {
-	return new Nalog(deps);
-}
-
-
-/**
- * @global
- */
-function testNalog() {
-  var showCaptcha = function(src) {
-//	return src;
-	const ss = SpreadsheetApp.getActiveSpreadsheet();
-	const html = HtmlService.createHtmlOutputFromFile('captcha.html');
-	html.setWidth(300);
-	html.setHeight(200);
-
-//	html.append('<img src="' + src + '">');
-//	html.append('<!DOCTYPE html><html><head><base target="_top"></head><body><img src="' + src + '"></body></html>');
-	//html.append('<img src=' + src + '>');
-
-	ss.show(html);
-  };
-
-	var n = createNalog();
-
-	var a = n._loadCaptchaToken();
-	var src = n._loadCaptchaImageSrc(a.loadTime, a.token);
-	Logger.log(src);
-
-	showCaptcha(src);
-}
