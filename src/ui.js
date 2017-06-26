@@ -1,8 +1,13 @@
 function sendRows() {
-  // TODO
-  sendToCerber();
+	// TODO
+	sendToCerber();
 }
 
+
+
+/**
+ * @constructor
+ */
 var UI = function() {
 	/**
 	 * @param {{
@@ -10,8 +15,8 @@ var UI = function() {
 	 *      height: number,
 	 *      src: string,
 	 *      sourceType: UI.SourceType,
-     *      title: string,
-     *      appendData: string
+	 *		  title: string,
+	 *      appendData: string
 	 *  }} pageParams
 	 * @param {{
 	 *      show: function(*): void
@@ -21,7 +26,7 @@ var UI = function() {
 		var page = null;
 		switch (pageParams.sourceType) {
 			case UI.SourceType.LOCAL:
-        		page = HtmlService.createHtmlOutputFromFile(pageParams.src);
+				page = HtmlService.createHtmlOutputFromFile(pageParams.src);
 				if (pageParams.appendData) {
 					page.append(pageParams.appendData);
 				}
@@ -62,27 +67,27 @@ function createUI() {
 
 
 function testUI() {
-  const ui = new UI();
-  const app = SpreadsheetApp.getActiveSpreadsheet();
-  const type = 1;
-  switch (type) {
-    case 1:
-      ui.showPopup({
-        width: 600,
-        height: 600,
-        src: 'http://service.nalog.ru/inn.do',
-        sourceType: UI.SourceType.REMOTE,
-        title: 'Test popup'
-      }, app);
-      break;
-    case 2:
-      ui.showPopup({
-        width: 500,
-        height: 500,
-        src: 'fns-index.html',
-        sourceType: UI.SourceType.LOCAL,
-        title: 'Test popup'
-      }, app);
-      break;
-  }
+	const ui = new UI();
+	const app = SpreadsheetApp.getActiveSpreadsheet();
+	const type = 1;
+	switch (type) {
+		case 1:
+			ui.showPopup({
+				width: 600,
+				height: 600,
+				src: 'http://service.nalog.ru/inn.do',
+				sourceType: UI.SourceType.REMOTE,
+				title: 'Test popup'
+			}, app);
+			break;
+		case 2:
+			ui.showPopup({
+				width: 500,
+				height: 500,
+				src: 'fns-index.html',
+				sourceType: UI.SourceType.LOCAL,
+				title: 'Test popup'
+			}, app);
+			break;
+	}
 }
