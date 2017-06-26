@@ -1,8 +1,8 @@
 {
-  "name": "untitled",
-  "version": "1.0.0",
+  "name": "nalog-service-helper",
+  "version": "0.0.1",
   "description": "",
-  "main": "1.js",
+  "main": "index.js",
   "dependencies": {
     "@types/google-apps-script": "0.0.13"
   },
