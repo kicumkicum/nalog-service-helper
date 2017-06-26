@@ -20,32 +20,30 @@ var UI = function() {
 	this.showPopup = function(pageParams, app) {
 		var page = null;
 		switch (pageParams.sourceType) {
-          case UI.SourceType.LOCAL:
-            page = HtmlService.createHtmlOutputFromFile(pageParams.src);
-            if (pageParams.appendData) {
-              page.append(pageParams.appendData);
-            }
-            break;
-          case UI.SourceType.REMOTE:
-            const html = UrlFetchApp.fetch(pageParams.src, {'muteHttpExceptions': true});
-            Logger.log(html.getResponseCode());
-            // str = html.getContentText();
-            // str = str.replace('</head>', '</head><script type="text/javascript">setTimeout(function() {document.querySelector("#fam").value = "' + v + '"}, 2000);</script>');
-
-            
-            page = HtmlService.createHtmlOutput(html);
-            page.setSandboxMode(HtmlService.SandboxMode.NATIVE);
-            //page = HtmlService.createHtmlOutput(html).append('<script>setTimeout(function() {document.querySelector("#fam").value = "' + v + '"}, 2000);</script>');
-            break;
+			case UI.SourceType.LOCAL:
+        		page = HtmlService.createHtmlOutputFromFile(pageParams.src);
+				if (pageParams.appendData) {
+					page.append(pageParams.appendData);
+				}
+				break;
+			case UI.SourceType.REMOTE:
+				const html = UrlFetchApp.fetch(pageParams.src, {'muteHttpExceptions': true});
+				Logger.log(html.getResponseCode());
+				// str = html.getContentText();
+				// str = str.replace('</head>', '</head><script type="text/javascript">setTimeout(function() {document.querySelector("#fam").value = "' + v + '"}, 2000);</script>');
+				page = HtmlService.createHtmlOutput(html);
+				page.setSandboxMode(HtmlService.SandboxMode.NATIVE);
+				//page = HtmlService.createHtmlOutput(html).append('<script>setTimeout(function() {document.querySelector("#fam").value = "' + v + '"}, 2000);</script>');
+				break;
 		}
 
-      if (page) {
-		page.setWidth(pageParams.width);
-		page.setHeight(pageParams.height);
-        page.setTitle(pageParams.title);
-      
-		app.show(page);
-      }
+		if (page) {
+			page.setWidth(pageParams.width);
+			page.setHeight(pageParams.height);
+			page.setTitle(pageParams.title);
+
+			app.show(page);
+		}
 	};
 };
 
