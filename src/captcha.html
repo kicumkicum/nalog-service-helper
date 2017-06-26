@@ -26,7 +26,7 @@
 								value: inputValue
 							};
 							try {
-								google.script.run.testRequest(captcha);
+								google.script.run.setCaptcha(captcha);
 							} catch (e) {
 								alert('ERROR: ' + e)
 							}

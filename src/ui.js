@@ -1,71 +1,15 @@
-function sendRows() {
-	// TODO
-	sendToCerber();
-}
-
-
-
 /**
- * @constructor
+ * @global
+ * @return {UI}
  */
-var UI = function() {
-	/**
-	 * @param {{
-	 *      width: number,
-	 *      height: number,
-	 *      src: string,
-	 *      sourceType: UI.SourceType,
-	 *		  title: string,
-	 *      appendData: string
-	 *  }} pageParams
-	 * @param {{
-	 *      show: function(*): void
-	 *  }} app
-	 */
-	this.showPopup = function(pageParams, app) {
-		var page = null;
-		switch (pageParams.sourceType) {
-			case UI.SourceType.LOCAL:
-				page = HtmlService.createHtmlOutputFromFile(pageParams.src);
-				if (pageParams.appendData) {
-					page.append(pageParams.appendData);
-				}
-				break;
-			case UI.SourceType.REMOTE:
-				const html = UrlFetchApp.fetch(pageParams.src, {'muteHttpExceptions': true});
-				Logger.log(html.getResponseCode());
-				// str = html.getContentText();
-				// str = str.replace('</head>', '</head><script type="text/javascript">setTimeout(function() {document.querySelector("#fam").value = "' + v + '"}, 2000);</script>');
-				page = HtmlService.createHtmlOutput(html);
-				page.setSandboxMode(HtmlService.SandboxMode.NATIVE);
-				//page = HtmlService.createHtmlOutput(html).append('<script>setTimeout(function() {document.querySelector("#fam").value = "' + v + '"}, 2000);</script>');
-				break;
-		}
-
-		if (page) {
-			page.setWidth(pageParams.width);
-			page.setHeight(pageParams.height);
-			page.setTitle(pageParams.title);
-
-			app.show(page);
-		}
-	};
-};
-
-
-/**
- * @enum
- */
-UI.SourceType = {
-	LOCAL: 'local',
-	REMOTE: 'remote'
-};
-
 function createUI() {
 	return new UI();
 }
 
 
+/**
+ * @global
+ */
 function testUI() {
 	const ui = new UI();
 	const app = SpreadsheetApp.getActiveSpreadsheet();
@@ -91,3 +35,83 @@ function testUI() {
 			break;
 	}
 }
+
+
+
+/**
+ * @constructor
+ */
+var UI = function() {
+	/**
+	 * @param {{
+	 *      width: number,
+	 *      height: number,
+	 *      src: string,
+	 *      sourceType: UI.SourceType,
+	 *		  title: string,
+	 *      appendData: (string|undefined)
+	 *  }} pageParams
+	 * @param {{
+	 *      show: function(*): void
+	 *  }} app
+	 */
+	this.showPopup = function(pageParams, app) {
+		var page = null;
+		switch (pageParams.sourceType) {
+			case UI.SourceType.LOCAL:
+				page = HtmlService.createHtmlOutputFromFile(pageParams.src);
+				if (pageParams.appendData) {
+					page.append(pageParams.appendData);
+				}
+				break;
+			case UI.SourceType.REMOTE:
+				const html = UrlFetchApp.fetch(pageParams.src, {'muteHttpExceptions': true});
+				Logger.log(html.getResponseCode());
+				page = HtmlService.createHtmlOutput(html);
+				page.setSandboxMode(HtmlService.SandboxMode.NATIVE);
+				break;
+		}
+
+		if (page) {
+			page.setWidth(pageParams.width);
+			page.setHeight(pageParams.height);
+			page.setTitle(pageParams.title);
+
+			app.show(page);
+		}
+	};
+
+
+	/**
+	 * @param {string} captchaSrc
+	 * @param {{
+	 *      show: function(*): void
+	 *  }} app
+	 *  @this {UI}
+	 */
+	this.showCaptcha = function(captchaSrc, app) {
+		const html = HtmlService.createHtmlOutputFromFile('captcha.html');
+		const ad =
+			'<script>' +
+				' setTimeout(function() {document.getElementById("image").setAttribute("src","' + captchaSrc + '") } , 3000)' +
+			'</script>';
+
+		this.showPopup({
+			width: 300,
+			height: 200,
+			src: 'captcha.html',
+			sourceType: UI.SourceType.LOCAL,
+			title: 'Captcha Loader',
+			appendData: ad
+		}, app);
+	};
+};
+
+
+/**
+ * @enum
+ */
+UI.SourceType = {
+	LOCAL: 'local',
+	REMOTE: 'remote'
+};

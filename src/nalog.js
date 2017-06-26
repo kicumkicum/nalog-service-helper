@@ -18,10 +18,6 @@ function testNalog() {
 		html.setWidth(300);
 		html.setHeight(200);
 
-//	html.append('<img src="' + src + '">');
-//	html.append('<!DOCTYPE html><html><head><base target="_top"></head><body><img src="' + src + '"></body></html>');
-		//html.append('<img src=' + src + '>');
-
 		ss.show(html);
 	};
 
@@ -29,14 +25,15 @@ function testNalog() {
 
 	var a = n._loadCaptchaToken();
 	var src = n._loadCaptchaImageSrc(a.loadTime, a.token);
+	n.getINN()
 	Logger.log(src);
 
 	showCaptcha(src);
 }
 
 
-const CAPTCHA_BASE_URL = 'https://service.nalog.ru/static/captcha.html';
-const SERVICE_BASE_URL = 'https://service.nalog.ru/inn.do';
+var CAPTCHA_BASE_URL = 'https://service.nalog.ru/static/captcha.html';
+var SERVICE_BASE_URL = 'https://service.nalog.ru/inn.do';
 //https://service.nalog.ru/static/captcha.html?r=1498150605927&a=
 
 
@@ -59,6 +56,7 @@ var Nalog = function(deps) {
 		const url = 'https://service.nalog.ru/inn-proc.do';
 		const newData = this._createOutData(data, captcha);
 		const responce = this._request.fetch('post', url, newData);
+		return responce;
 	};
 
 	this.getCaptchaImageSrc = function() {
@@ -100,7 +98,7 @@ var Nalog = function(deps) {
 	 * @this {Nalog}
 	 */
 	this._loadCaptchaImageSrc = function(loadTime, token) {
-	return CAPTCHA_BASE_URL + '?r=' + loadTime + '&a=' + token;
+		return CAPTCHA_BASE_URL + '?r=' + loadTime + '&a=' + token;
 	};
 
 	/**
@@ -108,9 +106,9 @@ var Nalog = function(deps) {
 	 * @private
 	 */
 	this._loadCaptchaToken = function() {
-	const now = Math.floor(Date.now() / 1000);
-	const response = UrlFetchApp.fetch(CAPTCHA_BASE_URL + '?' + now).getContentText();
-	return {loadTime: now, token: response};
+		const now = Math.floor(Date.now() / 1000);
+		const response = UrlFetchApp.fetch(CAPTCHA_BASE_URL + '?' + now).getContentText();
+		return {loadTime: now, token: response};
 	};
 };
 
