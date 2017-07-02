@@ -4,34 +4,54 @@
 		<base target="_top">
 		<script>
 			(function(window) {
+				function close() {
+					setTimeout(function() {
+						google.script.host.close();
+					}, 100);
+				}
+
 				window.onload = function() {
-					const button = document.getElementById('button');
-					button.addEventListener('click', function() {
-						const input = document.getElementById('input');
-						const inputValue = input.value;
+					const onWindowKeyUp = function(e) {
+						if (e.keyCode === 27) {
+							close();
+							return true;
+						} else {
+							return false;
+						}
+					};
+					const sendCaptcha = function(e) {
+						if ((e.keyCode || e.which) === 13) {
+							const inputValue = input.value;
 
-						if (input) {
-							const image = document.getElementById('image');
-							const imageSrc = image.src;
-							const mask = '&a=';
-							const index = imageSrc.indexOf(mask);
+							if (input) {
+								const image = document.getElementById('image');
+								const imageSrc = image.src;
+								const mask = '&a=';
+								const index = imageSrc.indexOf(mask);
 
-							try {
-								var captchaToken = imageSrc.substring(index + mask.length);
-							} catch (e) {
-								alert(e)
-							}
-							const captcha = {
-								token: captchaToken,
-								value: inputValue
-							};
-							try {
-								google.script.run.setCaptcha(captcha);
-							} catch (e) {
-								alert('ERROR: ' + e)
+								try {
+									var captchaToken = imageSrc.substring(index + mask.length);
+								} catch (e) {
+									alert(e)
+								}
+								const captcha = {
+									token: captchaToken,
+									value: inputValue
+								};
+
+								google.script.run.__setCaptcha(captcha);
+								close();
 							}
 						}
-					});
+					};
+
+					window.addEventListener('keyup', onWindowKeyUp);
+					
+					const input = document.getElementById('input');
+					input.addEventListener('keydown', sendCaptcha);
+
+					const button = document.getElementById('button');
+					button.addEventListener('keydown', sendCaptcha);
 				}
 			})(window)
 		</script>
