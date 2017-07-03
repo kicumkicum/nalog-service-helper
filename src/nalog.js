@@ -50,19 +50,22 @@ var Nalog = function(deps) {
 	 *	 token: string,
 	 *	 value: string
 	 * }} captcha
+	 * @return {number}
+	 * @throws {Object}
 	 * @this {Nalog}
 	 */
 	this.getINN = function(data, captcha) {
 		const url = 'https://service.nalog.ru/inn-proc.do';
 		const newData = this._createOutData(data, captcha);
 		const responseRaw = this._request.fetch('post', url, newData);
+		log(responseRaw);
 		const response = JSON.parse(responseRaw);
 
 		if (response['inn'] && response['code'] === 1) {
 			return response['inn'];
+		} else {
+			throw response;
 		}
-
-		return 0;
 	};
 
 	this.getCaptchaImageSrc = function() {
