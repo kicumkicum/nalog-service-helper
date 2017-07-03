@@ -9,6 +9,10 @@ function Sheet() {
 	 */
 	this._app = SpreadsheetApp;
 
+	/**
+	 * @return {Array<string>}
+	 * @this {Sheet}
+	 */
 	this.readFromActiveRow = function() {
 		const activeSheet = this._app.getActiveSheet();
 		const range = activeSheet.getActiveRange();

@@ -52,7 +52,7 @@ var App = function() {
 	 * @type {Request}
 	 * @private
 	 */
-	this._request = createRequest();
+	this._request = new Request();
 
 	/**
 	 * @type {Nalog}
@@ -71,6 +71,10 @@ var App = function() {
 		// Next call this.setCaptcha
 	};
 
+	/**
+	 * @param {Nalog.Captcha} captcha
+	 * @this {App}
+	 */
 	this.writeINN = function(captcha) {
 		// Read fio from current Row
 		const value = this._sheet.readFromActiveRow();
@@ -92,6 +96,8 @@ var App = function() {
 		});
 	};
 
+	/**
+	 */
 	this.createMenu = function() {
 		const appUi = SpreadsheetApp.getUi();
 		appUi.createMenu('ФНС')

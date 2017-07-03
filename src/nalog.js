@@ -46,10 +46,7 @@ var Nalog = function(deps) {
 
 	/**
 	 * @param {Nalog.InputData} data
-	 * @param {{
-	 *	 token: string,
-	 *	 value: string
-	 * }} captcha
+	 * @param {Nalog.Captcha} captcha
 	 * @return {number}
 	 * @throws {Object}
 	 * @this {Nalog}
@@ -68,6 +65,10 @@ var Nalog = function(deps) {
 		}
 	};
 
+	/**
+	 * @return {string}
+	 * @this {Nalog}
+	 */
 	this.getCaptchaImageSrc = function() {
 		const captchaToken = this._loadCaptchaToken();
 		return this._loadCaptchaImageSrc(captchaToken.loadTime, captchaToken.token);
@@ -159,3 +160,12 @@ Nalog.InputData;
  * }}
  */
 Nalog.OutputtData;
+
+
+/**
+ * @typedef {{
+ *	 token: string,
+ *	 value: string
+ * }}
+ */
+Nalog.Captcha;
