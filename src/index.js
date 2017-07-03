@@ -16,6 +16,7 @@ function __setCaptcha(captcha) {
 
 /**
  * @param {...*} var_args
+ * @global
  */
 function log(var_args) {
 	const args = [].join.call(arguments, ', ');
@@ -75,17 +76,20 @@ var App = function() {
 		const value = this._sheet.readFromActiveRow();
 
 		// Send POST request to Nalog for getting INN
-		const inn = this._nalog.getINN({
-			fam: value[0],
-			nam: value[1],
-			otch: value[2],
-			bdate: value[3],
-			docno: value[5],
-			docdt: value[6]
-		}, captcha);
+		try {
+			var inn = this._nalog.getINN(this._createINNData(value), captcha);
+		} catch (e) {
+			// this._ui.showPopup()
+			log(e);
+		}
+
+		log('inn', inn);
 
 		// Write INN to Cell
-		this._sheet.writeToCell(inn, 'H' + this._sheet.getCurrentRow());
+		this._sheet.writeToCell(inn, {
+			row: this._sheet.getCurrentRow(),
+			column: Sheet.RowName.INN + 1
+		});
 	};
 
 	this.createMenu = function() {
@@ -94,6 +98,34 @@ var App = function() {
 			.addItem('Запросить ИНН', '_getINN')
 			.addToUi();
 	};
+
+	/**
+	 * @param {Array<string>} rowData
+	 * @return {Object}
+	 * @private
+	 */
+	this._createINNData = function(rowData) {
+		return {
+			fam: rowData[Sheet.RowName.FAMILY],
+			nam: rowData[Sheet.RowName.NAME],
+			otch: rowData[Sheet.RowName.SECOND_NAME],
+			bdate: rowData[Sheet.RowName.BIRTHDAY].replace('/', '.').replace('/', '.'),
+			docno: rowData[Sheet.RowName.PASSPORT_NUMBER].replace('№', '').splice(2, 0, ' '),
+			docdt: rowData[Sheet.RowName.PASSPORT_DATE].replace('/', '.').replace('/', '.')
+		};
+	};
 };
+
+
+/**
+ * @param {number} idx
+ * @param {number} rem
+ * @param {string} str
+ * @return {string}
+ */
+String.prototype.splice = function(idx, rem, str) {
+	return this.slice(0, idx) + str + this.slice(idx + Math.abs(rem));
+};
+
 
 var app = new App();
