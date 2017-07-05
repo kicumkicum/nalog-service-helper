@@ -40,6 +40,22 @@ function Sheet() {
 	this.getCurrentRow = function() {
 		return this._app.getActiveRange().getRow();
 	};
+
+	this.splitNames = function(from, to) {
+		const fullNames = this._app.getActiveSheet().getRange(from, Sheet.RowName.FULL_NAME + 1, to, 1).getDisplayValues();
+
+		fullNames.forEach(function(fullName, i) {
+			var names = fullName[0].split(' ');
+			if (fullName[0].toLocaleLowerCase().indexOf('общество') > -1 ||
+				fullName[0].toLocaleLowerCase().indexOf('администрация') > -1) {
+				return;
+			}
+
+			this._app.getActiveSheet().getRange(i, Sheet.RowName.FAMILY + 1).setValue(names[0] || '');
+			this._app.getActiveSheet().getRange(i, Sheet.RowName.NAME + 1).setValue(names[1] || '');
+			this._app.getActiveSheet().getRange(i, Sheet.RowName.SECOND_NAME + 1).setValue(names[2] || '');
+		}, this);
+	};
 }
 
 

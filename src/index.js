@@ -31,6 +31,14 @@ function _getINN() {
 	app.getCaptcha();
 }
 
+
+/**
+ * @private
+ */
+function _splitNames() {
+	app.splitNames();
+}
+
 function testReadRow() {
 	app.writeINN();
 }
@@ -96,12 +104,19 @@ var App = function() {
 		});
 	};
 
+	this.splitNames = function() {
+		this._sheet.splitNames(2, 13861);
+	};
+
 	/**
 	 */
 	this.createMenu = function() {
 		const appUi = SpreadsheetApp.getUi();
 		appUi.createMenu('ФНС')
 			.addItem('Запросить ИНН', '_getINN')
+			.addToUi();
+		appUi.createMenu('Утилиты')
+			.addItem('Разделить полное имя на столбцы', '_splitNames')
 			.addToUi();
 	};
 
