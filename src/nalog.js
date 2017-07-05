@@ -41,7 +41,7 @@ var SERVICE_BASE_URL = 'https://service.nalog.ru/inn.do';
  * @param {Nalog.Deps} deps
  * @this {Nalog}
  */
-var Nalog = function(deps) {
+function Nalog(deps) {
 	this._request = deps.request;
 
 	/**

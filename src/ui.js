@@ -41,7 +41,7 @@ function testUI() {
 /**
  * @constructor
  */
-var UI = function() {
+function UI() {
 	/**
 	 * @param {{
 	 *      width: number,
