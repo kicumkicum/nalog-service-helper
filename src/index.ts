@@ -7,14 +7,14 @@ export function onOpen() {
 	app.createMenu();
 }
 
-export function __setCaptcha(captcha: Captcha) {
+export function setCaptcha(captcha: Captcha) {
 	app.writeINN(captcha);
 }
 
-export function _getINN() {
+export function getINN() {
 	app.getCaptcha();
 }
 
-export function _splitNames() {
+export function splitNames() {
 	app.splitNames();
 }

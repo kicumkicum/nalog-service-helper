@@ -54,10 +54,10 @@ export default class App {
 	createMenu() {
 		const appUi = SpreadsheetApp.getUi();
 		appUi.createMenu('ФНС')
-            .addItem('Запросить ИНН', '_getINN')
+            .addItem('Запросить ИНН', 'getINN')
             .addToUi();
 		appUi.createMenu('Утилиты')
-            .addItem('Разделить полное имя на столбцы', '_splitNames')
+            .addItem('Разделить полное имя на столбцы', 'splitNames')
             .addToUi();
 	};
 

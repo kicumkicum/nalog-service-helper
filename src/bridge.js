@@ -2,8 +2,8 @@ function onOpen() {
 	global.onOpen();
 }
 
-function __setCaptcha(captcha) {
-	global.__setCaptcha(captcha);
+function setCaptcha(captcha) {
+	global.setCaptcha(captcha);
 }
 
 function log(var_args) {
@@ -11,10 +11,10 @@ function log(var_args) {
 	Logger.log(args);
 }
 
-function _getINN() {
-	global._getINN();
+function getINN() {
+	global.getINN();
 }
 
-function _splitNames() {
-	global._splitNames();
+function splitNames() {
+	global.splitNames();
 }
