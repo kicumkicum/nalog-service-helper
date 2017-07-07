@@ -10,7 +10,3 @@ export default class Request {
 		return UrlFetchApp.fetch(url, options);
 	}
 }
-
-export enum A {
-	a
-}
