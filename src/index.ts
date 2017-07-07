@@ -72,6 +72,3 @@ export default class App {
 		};
 	}
 }
-
-declare const global: any;
-global.app = new App();
