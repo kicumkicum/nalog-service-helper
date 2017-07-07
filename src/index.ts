@@ -1,4 +1,4 @@
-import App from './index';
+import App from './application';
 
 const app = new App();
 
@@ -15,16 +15,6 @@ export function onOpen() {
  */
 export function __setCaptcha(captcha) {
 	app.writeINN(captcha);
-}
-
-
-/**
- * @param {...*} var_args
- * @global
- */
-export function log(var_args) {
-	const args = [].join.call(arguments, ', ');
-	Logger.log(args);
 }
 
 
