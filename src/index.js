@@ -7,7 +7,7 @@ function onOpen() {
 
 
 /**
- * @param {string} captcha
+ * @param {Nalog.Captcha} captcha
  */
 function __setCaptcha(captcha) {
 	app.writeINN(captcha);
@@ -67,86 +67,83 @@ var App = function() {
 	 * @private
 	 */
 	this._nalog = createNalog({request: this._request});
+};
 
-	/**
-	 * @this {App}
-	 */
-	this.getCaptcha = function() {
-		const captchaSrc = this._nalog.getCaptchaImageSrc();
-		const currentApp = SpreadsheetApp.getActiveSpreadsheet();
-		this._ui.showCaptcha(captchaSrc, currentApp);
 
-		// Next call this.setCaptcha
-	};
+/**
+ */
+App.prototype.getCaptcha = function() {
+	const captchaSrc = this._nalog.getCaptchaImageSrc();
+	const currentApp = SpreadsheetApp.getActiveSpreadsheet();
+	this._ui.showCaptcha(captchaSrc, currentApp);
 
-	/**
-	 * @param {Nalog.Captcha} captcha
-	 * @this {App}
-	 */
-	this.writeINN = function(captcha) {
-		// Read fio from current Row
-		const value = this._sheet.readFromActiveRow();
+	// Next call this.setCaptcha
+};
 
-		// Send POST request to Nalog for getting INN
-		try {
-			var inn = this._nalog.getINN(this._createINNData(value), captcha);
-		} catch (e) {
-			// this._ui.showPopup()
-			log(e);
-		}
 
-		log('inn', inn);
+/**
+ * @param {Nalog.Captcha} captcha
+ */
+App.prototype.writeINN = function(captcha) {
+	// Read fio from current Row
+	const value = this._sheet.readFromActiveRow();
 
-		// Write INN to Cell
-		this._sheet.writeToCell(inn, {
-			row: this._sheet.getCurrentRow(),
-			column: Sheet.RowName.INN + 1
-		});
-	};
+	// Send POST request to Nalog for getting INN
+	try {
+		var inn = this._nalog.getINN(this._createINNData(value), captcha);
+	} catch (e) {
+		// this._ui.showPopup()
+		log(e);
+	}
 
-	this.splitNames = function() {
-		this._sheet.splitNames(2, 13861);
-	};
+	log('inn', inn);
 
-	/**
-	 */
-	this.createMenu = function() {
-		const appUi = SpreadsheetApp.getUi();
-		appUi.createMenu('ФНС')
-			.addItem('Запросить ИНН', '_getINN')
-			.addToUi();
-		appUi.createMenu('Утилиты')
-			.addItem('Разделить полное имя на столбцы', '_splitNames')
-			.addToUi();
-	};
+	// Write INN to Cell
+	this._sheet.writeToCell(inn, {
+		row: this._sheet.getCurrentRow(),
+		column: Sheet.RowName.INN + 1
+	});
+};
 
-	/**
-	 * @param {Array<string>} rowData
-	 * @return {Object}
-	 * @private
-	 */
-	this._createINNData = function(rowData) {
-		return {
-			fam: rowData[Sheet.RowName.FAMILY],
-			nam: rowData[Sheet.RowName.NAME],
-			otch: rowData[Sheet.RowName.SECOND_NAME],
-			bdate: rowData[Sheet.RowName.BIRTHDAY].replace('/', '.').replace('/', '.'),
-			docno: rowData[Sheet.RowName.PASSPORT_NUMBER].replace('№', '').splice(2, 0, ' '),
-			docdt: rowData[Sheet.RowName.PASSPORT_DATE].replace('/', '.').replace('/', '.')
-		};
+
+/**
+ */
+App.prototype.splitNames = function() {
+	this._sheet.splitNames(2, 13861);
+};
+
+
+/**
+ */
+App.prototype.createMenu = function() {
+	const appUi = SpreadsheetApp.getUi();
+	appUi.createMenu('ФНС')
+		.addItem('Запросить ИНН', '_getINN')
+		.addToUi();
+	appUi.createMenu('Утилиты')
+		.addItem('Разделить полное имя на столбцы', '_splitNames')
+		.addToUi();
+};
+
+
+/**
+ * @param {Array<string>} rowData
+ * @return {Object}
+ * @private
+ */
+App.prototype._createINNData = function(rowData) {
+	return {
+		fam: rowData[Sheet.RowName.FAMILY],
+		nam: rowData[Sheet.RowName.NAME],
+		otch: rowData[Sheet.RowName.SECOND_NAME],
+		bdate: rowData[Sheet.RowName.BIRTHDAY].replace('/', '.').replace('/', '.'),
+		docno: rowData[Sheet.RowName.PASSPORT_NUMBER].replace('№', '').splice(2, 0, ' '),
+		docdt: rowData[Sheet.RowName.PASSPORT_DATE].replace('/', '.').replace('/', '.')
 	};
 };
 
 
 /**
- * @param {number} idx
- * @param {number} rem
- * @param {string} str
- * @return {string}
+ * @type {App}
  */
-String.prototype.splice = function(idx, rem, str) {
-	return this.slice(0, idx) + str + this.slice(idx + Math.abs(rem));
-};
-
-
 var app = new App();

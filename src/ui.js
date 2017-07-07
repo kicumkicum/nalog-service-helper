@@ -41,9 +41,11 @@ function testUI() {
 /**
  * @constructor
  */
-function UI() {
-	/**
-	 * @param {{
+function UI() {}
+
+
+/**
+ * @param {{
 	 *      width: number,
 	 *      height: number,
 	 *      src: string,
@@ -51,60 +53,58 @@ function UI() {
 	 *		  title: string,
 	 *      appendData: (string|undefined)
 	 *  }} pageParams
-	 * @param {{
+ * @param {{
 	 *      show: function(*): void
 	 *  }} app
-	 */
-	this.showPopup = function(pageParams, app) {
-		var page = null;
-		switch (pageParams.sourceType) {
-			case UI.SourceType.LOCAL:
-				page = HtmlService.createHtmlOutputFromFile(pageParams.src);
-				if (pageParams.appendData) {
-					page.append(pageParams.appendData);
-				}
-				break;
-			case UI.SourceType.REMOTE:
-				const html = UrlFetchApp.fetch(pageParams.src, {'muteHttpExceptions': true});
-				Logger.log(html.getResponseCode());
-				page = HtmlService.createHtmlOutput(html);
-				page.setSandboxMode(HtmlService.SandboxMode.NATIVE);
-				break;
-		}
+ */
+UI.prototype.showPopup = function(pageParams, app) {
+	var page = null;
+	switch (pageParams.sourceType) {
+		case UI.SourceType.LOCAL:
+			page = HtmlService.createHtmlOutputFromFile(pageParams.src);
+			if (pageParams.appendData) {
+				page.append(pageParams.appendData);
+			}
+			break;
+		case UI.SourceType.REMOTE:
+			const html = UrlFetchApp.fetch(pageParams.src, {'muteHttpExceptions': true});
+			Logger.log(html.getResponseCode());
+			page = HtmlService.createHtmlOutput(html);
+			page.setSandboxMode(HtmlService.SandboxMode.NATIVE);
+			break;
+	}
 
-		if (page) {
-			page.setWidth(pageParams.width);
-			page.setHeight(pageParams.height);
-			page.setTitle(pageParams.title);
+	if (page) {
+		page.setWidth(pageParams.width);
+		page.setHeight(pageParams.height);
+		page.setTitle(pageParams.title);
 
-			app.show(page);
-		}
-	};
+		app.show(page);
+	}
+};
 
 
-	/**
-	 * @param {string} captchaSrc
-	 * @param {{
+/**
+ * @param {string} captchaSrc
+ * @param {{
 	 *      show: function(*): void
 	 *  }} app
-	 *  @this {UI}
-	 */
-	this.showCaptcha = function(captchaSrc, app) {
-		const html = HtmlService.createHtmlOutputFromFile('captcha.html');
-		const ad =
-			'<script>' +
-				' setTimeout(function() {document.getElementById("image").setAttribute("src","' + captchaSrc + '") } , 3000)' +
-			'</script>';
+ */
+UI.prototype.showCaptcha = function(captchaSrc, app) {
+	const html = HtmlService.createHtmlOutputFromFile('captcha.html');
+	const ad =
+		'<script>' +
+		' setTimeout(function() {document.getElementById("image").setAttribute("src","' + captchaSrc + '") } , 3000)' +
+		'</script>';
 
-		this.showPopup({
-			width: 300,
-			height: 200,
-			src: 'captcha.html',
-			sourceType: UI.SourceType.LOCAL,
-			title: 'Captcha Loader',
-			appendData: ad
-		}, app);
-	};
+	this.showPopup({
+		width: 300,
+		height: 200,
+		src: 'captcha.html',
+		sourceType: UI.SourceType.LOCAL,
+		title: 'Captcha Loader',
+		appendData: ad
+	}, app);
 };
 
 

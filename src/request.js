@@ -4,23 +4,24 @@
 /**
  * @constructor
  */
-function Transport() {
-	/**
-	 * @param {string} method
-	 * @param {string} url
-	 * @param {Object} data
-	 * @param {Object=} opt_headers
-	 * @return {HTTPResponse}
-	 */
-	this.fetch = function(method, url, data, opt_headers) {
-		const options = {
-			'method': method,
-			'payload': data,
-			'muteHttpExceptions': true
-		};
-		return UrlFetchApp.fetch(url, options);
+function Transport() {}
+
+
+/**
+ * @param {string} method
+ * @param {string} url
+ * @param {Object} data
+ * @param {Object=} opt_headers
+ * @return {HTTPResponse}
+ */
+Transport.prototype.fetch = function(method, url, data, opt_headers) {
+	const options = {
+		'method': method,
+		'payload': data,
+		'muteHttpExceptions': true
 	};
-}
+	return /** @type {HTTPResponse} */(UrlFetchApp.fetch(url, options));
+};
 
 
 
@@ -28,17 +29,21 @@ function Transport() {
  * @constructor
  */
 function Request() {
-	this._transport = new Transport();
-
 	/**
-	 * @param {string} method
-	 * @param {string} url
-	 * @param {Object} data
-	 * @param {Object=} opt_headers
-	 * @return {*}
-	 * @this {Request}
+	 * @type {Transport}
+	 * @private
 	 */
-	this.fetch = function(method, url, data, opt_headers) {
-		return this._transport.fetch(method, url, data, opt_headers);
-	};
+	this._transport = new Transport();
 }
+
+
+/**
+ * @param {string} method
+ * @param {string} url
+ * @param {Object} data
+ * @param {Object=} opt_headers
+ * @return {*}
+ */
+Request.prototype.fetch = function(method, url, data, opt_headers) {
+	return this._transport.fetch(method, url, data, opt_headers);
+};
