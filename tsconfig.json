@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "module": "amd",
+    "outFile": "./lib/index.js",
+    "sourceRoot": "./src/",
+    "rootDir": "./src/",
+    "sourceMap": true
+  },
+  "files": [
+    "./src/index.ts"
+  ]
+}
