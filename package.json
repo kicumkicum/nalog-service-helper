@@ -2,7 +2,7 @@
   "name": "nalog-service-helper",
   "version": "0.1.0",
   "description": "",
-  "main": "./lib/index.js",
+  "main": "./index.js",
   "dependencies": {
     "@types/google-apps-script": "0.0.13",
     "typescript-bundle": "^0.8.2"
