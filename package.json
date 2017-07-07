@@ -13,8 +13,9 @@
     "test": "exit 1 && mocha --recursive --timeout 15000",
 
     "prebuild": "npm run clean",
-    "build": "tsc-bundle --project ./tsconfig.json --exportAs global",
-    "postbuild": "cat ./src/bridge.js >> ./lib/index.js"
+    "build": "tsc-bundle --project ./tsconfig.json --exportAs global && cat ./src/bridge.js >> ./lib/index.js",
+    "postbuild": "npm run fix.build",
+    "fix.build": "sed -i -- 's/.default/[\"default\"]/g' ./lib/index.js"
   },
   "author": "kicumkicum@gmail.com",
   "license": "ISC"
