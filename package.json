@@ -2,14 +2,21 @@
   "name": "nalog-service-helper",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "./index.js",
   "dependencies": {
-    "@types/google-apps-script": "0.0.13"
+    "@types/google-apps-script": "0.0.13",
+    "typescript-bundle": "^0.8.2"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rm -rf ./lib/*",
+    "test": "exit 1 && mocha --recursive --timeout 15000",
+
+    "prebuild": "npm run clean",
+    "build": "tsc-bundle --project ./tsconfig.json --exportAs global && cat ./index.js >> ./lib/index.js",
+    "postbuild": "npm run fix.build",
+    "fix.build": "sed -i -- 's/.default/[\"default\"]/g' ./lib/index.js"
   },
-  "author": "",
+  "author": "kicumkicum@gmail.com",
   "license": "ISC"
 }
